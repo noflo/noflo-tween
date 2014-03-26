@@ -8,7 +8,7 @@
   ],
   "dependencies": {
     "noflo/noflo": "*",
-    "djdeath/GreenSock-JS": "componentize"
+    "djdeath/trident-js": "*"
   },
   "scripts": [
     "components/Tween.coffee",

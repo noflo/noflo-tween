@@ -1,5 +1,5 @@
 noflo = require 'noflo'
-gsap = require 'gsap'
+trident = require 'trident-js'
 
 class Tween extends noflo.Component
   description: 'Tweener component'
@@ -12,6 +12,7 @@ class Tween extends noflo.Component
       stop: new noflo.Port 'bang'
       from: new noflo.Port 'number'
       to: new noflo.Port 'number'
+      duration: new noflo.Port 'number'
       repeat: new noflo.Port 'number'
       autoreverse: new noflo.Port 'boolean'
       easing: new noflo.Port 'string'
@@ -22,48 +23,82 @@ class Tween extends noflo.Component
 
     # params
     @inPorts.from.on 'data', (value) =>
-      @getTween().vars.startAt = { x: value }
+      @getTween()
+      console.log('got from = ' + value)
+      @startValue = value
     @inPorts.to.on 'data', (value) =>
-      @getTween().updateTo({ x: value })
+      @getTween()
+      console.log('got to = ' + value)
+      @stopValue = value
     @inPorts.duration.on 'data', (value) =>
-      @getTween().duration(parseFloat(value) / 1000.0)
+      @getTween().duration = parseFloat(value) / 1000.0
     @inPorts.repeat.on 'data', (value) =>
-      @getTween().repeat(value)
+      @getTween().repeatCount = value
     @inPorts.autoreverse.on 'data', (value) =>
-      @getTween().yoyo(value)
+      @getTween().repeatBehavior = if value then trident.TimelineRepeatBehavior.REVERSE else trident.TimelineRepeatBehavior.NORMAL
+    @inPorts.easing.on 'data', (value) =>
+      ease = @getEasing(value)
+      return unless ease
+      @easing = ease
 
     # actions
     @inPorts.start.on 'data', (value) =>
       @getTween().play()
-      @getTween().paused(false)
     @inPorts.stop.on 'data', (value) =>
-      @getTween().paused(true)
-      @getTween().seek(0)
+      @getTween().cancel()
     @inPorts.pause.on 'data', (value) =>
-      @getTween().paused(true)
+      @getTween().suspend()
     @inPorts.unpause.on 'data', (value) =>
-      @getTween().paused(false)
+      @getTween().resume()
+
+  getEasing: (name) ->
+    lowName = name.toLowerCase()
+    s = lowName
+    s = s.replace(/bounce/, "Bounce")
+    s = s.replace(/linear/, "Linear")
+    s = s.replace(/qua/, "Qua")
+    s = s.replace(/cubic/, "Cubic")
+    s = s.replace(/sin/, "Sin")
+    s = s.replace(/circ/, "Circ")
+    s = s.replace(/back/, "Back")
+    s = s.replace(/elastic/, "Elastic")
+    s = s.replace(/in$/, "In")
+    s = s.replace(/out$/, "Out")
+    s = s.replace(/inout$/, "InOut")
+
+    console.log(name + ' -> ' + s)
+
+    return null unless trident.EasingFunctions[s]
+    return new trident.EasingFunctions[s]()
 
   getTween: () ->
     return @tween if @tween
-    @obj =
-      x: 0
-    params =
-      x: 1
-      ease: 'linear'
-      onStart: () =>
-        return unless @outPorts.started.isAttached()
-        @outPorts.started.send(true)
-        @outPorts.started.disconnect()
-      onUpdate: () =>
-        return unless @outPorts.value.isAttached()
-        @outPorts.value.send(@obj.x)
-        @outPorts.value.disconnect()
-      onComplete: () =>
-        return unless @outPorts.stopped.isAttached()
-        @outPorts.stopped.send(true)
-        @outPorts.stopped.disconnect()
-    @tween = new gsap.TweenMax(@obj, 1, )
+    @startValue = 0
+    @stopValue = 1
+    @tween = new trident.Timeline(@obj)
+    @easing = @getEasing('linear')
+    @tween.addEventListener('onpulse', (timeline, durationFraction, timelinePosition) =>
+      return unless @outPorts.value.isAttached()
+      console.log('pulse durationF=' + durationFraction)
+      console.log('pulse timelineP=' + timelinePosition)
+      console.log('pulse start=' + @startValue)
+      console.log('pulse stop=' + @stopValue)
+      value = @startValue + @easing.map(durationFraction) * (@stopValue - @startValue)
+      console.log('pulse value=' + value)
+      @outPorts.value.send(value)
+      @outPorts.value.disconnect())
+    @tween.addEventListener('onstatechange', (timeline, oldState, newState, durationFraction, timelinePosition) =>
+      if newState == trident.TimelineState.PLAYING_FORWARD or newState == trident.TimelineState.PLAYING_REVERSE
+        if @outPorts.started.isAttached()
+          @outPorts.started.send(true)
+          @outPorts.started.disconnect()
+      if newState == trident.TimelineState.DONE or newState == trident.TimelineState.CANCELLED
+        if @outPorts.stopped.isAttached()
+          @outPorts.stopped.send(true)
+          @outPorts.stopped.disconnect())
+    return @tween
+
+
 
   shutdown: () ->
     return unless @tween
