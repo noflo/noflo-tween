@@ -39,6 +39,7 @@
   "keywords": [],
   "noflo": {
     "components": {
+      "Timeline": "components/Timeline.coffee",
       "Tween": "components/Tween.coffee"
     }
   },

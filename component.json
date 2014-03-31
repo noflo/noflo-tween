@@ -11,6 +11,7 @@
     "djdeath/trident-js": "*"
   },
   "scripts": [
+    "components/Timeline.coffee",
     "components/Tween.coffee",
     "index.js"
   ],
@@ -19,6 +20,7 @@
   ],
   "noflo": {
     "components": {
+      "Timeline": "components/Timeline.coffee",
       "Tween": "components/Tween.coffee"
     }
   }

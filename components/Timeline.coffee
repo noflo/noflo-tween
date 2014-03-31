@@ -74,7 +74,9 @@ class Timeline extends noflo.Component
 
   emitPosition: () ->
     return unless @outPorts.value.isAttached()
-    @outPorts.value.send(@elapsedTime / @duration)
+    pos = @elapsedTime / @duration
+    pos = 1 - pos unless @direction
+    @outPorts.value.send(pos)
     @outPorts.value.disconnect()
 
   currentTime: () ->
@@ -90,15 +92,14 @@ class Timeline extends noflo.Component
     return unless @running
 
     # Measure delta
+    delta = 0
     if @lastTime
-      delta = 0
-    else
       t = @currentTime()
-      diff = t - @lastTime
+      delta = t - @lastTime
       @lastTime = t
 
     # Add to elapsedTime
-    if @direction then @elapsedTime += diff else @elapsedTime -= diff
+    if @direction then @elapsedTime += delta else @elapsedTime -= delta
 
     # End case
     if @isComplete()
@@ -113,13 +114,7 @@ class Timeline extends noflo.Component
       return
 
     # Loop case
-    if @autoreverse
-      if @direction
-        @elapsedTime = @elapsedTime - @duration
-      else
-        @elapsedTime = @duration - (@elapsedTime - @duration)
-    else
-      @elapsedTime = @elapsedTime - @duration
+    @elapsedTime = @elapsedTime - @duration
 
     @direction = !@direction if @autoreverse
     @repeat -= 1
