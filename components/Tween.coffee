@@ -71,9 +71,9 @@ class Tween extends noflo.Component
 
   getTween: () ->
     return @tween if @tween
-    @startValue = 0
-    @stopValue = 1
-    @tween = new trident.Timeline(@obj)
+    @startValue = 0.0
+    @stopValue = 1.0
+    @tween = new trident.Timeline()
     @easing = @getEasing('linear')
     @tween.addEventListener('onpulse', (timeline, durationFraction, timelinePosition) =>
       return unless @outPorts.value.isAttached()
