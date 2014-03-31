@@ -22,10 +22,10 @@ class Timeline extends noflo.Component
 
     @running = false
     @duration = 500
-    @position = 0.0
     @repeat = @repeatCount = 0
     @reverse = false
     @autoreverse = false
+    @direction = true
 
     # control
     @inPorts.start.on 'data', () =>
@@ -44,6 +44,8 @@ class Timeline extends noflo.Component
       @repeatCount = value
     @inPorts.autoreverse.on 'data', (value) =>
       @autoreverse = value
+    @inPorts.reverse.on 'data', (value) =>
+      @direction = !value
 
     # tick
     @inPorts.tick.on 'data', () =>
@@ -51,8 +53,8 @@ class Timeline extends noflo.Component
 
 
   start: () ->
+    @lastTime = @currentTime()
     @elapsedTime = 0
-    @position = if @reverse then 1.0 else 0.0
     @repeat = @repeatCount
     @running = true
     return unless @outPorts.started.isAttached()
@@ -70,12 +72,13 @@ class Timeline extends noflo.Component
     @running = false
 
   unpause: () ->
+    @lastTime = @currentTime()
     @running = true
 
   emitPosition: () ->
     return unless @outPorts.value.isAttached()
     pos = @elapsedTime / @duration
-    pos = 1 - pos unless @direction
+    pos = 1.0 - pos unless @direction
     @outPorts.value.send(pos)
     @outPorts.value.disconnect()
 
@@ -92,32 +95,30 @@ class Timeline extends noflo.Component
     return unless @running
 
     # Measure delta
-    delta = 0
-    if @lastTime
-      t = @currentTime()
-      delta = t - @lastTime
-      @lastTime = t
+    t = @currentTime()
+    delta = t - @lastTime
+    @lastTime = t
 
     # Add to elapsedTime
-    if @direction then @elapsedTime += delta else @elapsedTime -= delta
+    @elapsedTime += delta
 
     # End case
     if @isComplete()
-      @position = if @direction then 1.0 else 0.0
+      # fix value on bounds
+      @elapsedTime = @duration
       @emitPosition()
       @stop()
       return
 
     # Continue case
-    if @repeat < 1
+    if @elapsedTime < @duration
       @emitPosition()
       return
 
     # Loop case
     @elapsedTime = @elapsedTime - @duration
-
     @direction = !@direction if @autoreverse
-    @repeat -= 1
+    @repeat -= 1 if @repeat > 0
 
     @emitPosition()
 
