@@ -24,16 +24,14 @@ class Tween extends noflo.Component
     # params
     @inPorts.from.on 'data', (value) =>
       @getTween()
-      console.log('got from = ' + value)
-      @startValue = value
+      @startValue = parseFloat(value)
     @inPorts.to.on 'data', (value) =>
       @getTween()
-      console.log('got to = ' + value)
-      @stopValue = value
+      @stopValue = parseFloat(value)
     @inPorts.duration.on 'data', (value) =>
-      @getTween().duration = parseFloat(value) / 1000.0
+      @getTween().duration = parseFloat(value)
     @inPorts.repeat.on 'data', (value) =>
-      @getTween().repeatCount = value
+      @getTween().repeatCount = parseInt(value)
     @inPorts.autoreverse.on 'data', (value) =>
       @getTween().repeatBehavior = if value then trident.TimelineRepeatBehavior.REVERSE else trident.TimelineRepeatBehavior.NORMAL
     @inPorts.easing.on 'data', (value) =>
