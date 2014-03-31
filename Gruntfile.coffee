@@ -54,6 +54,11 @@ module.exports = ->
     coffeelint:
       components: ['components/*.coffee']
 
+    # noflo-test
+    exec:
+      test:
+        command: './node_modules/.bin/noflo-test --spec test/*.coffee'
+
   # Grunt plugins used for building
   @loadNpmTasks 'grunt-contrib-coffee'
   @loadNpmTasks 'grunt-component'
@@ -65,6 +70,7 @@ module.exports = ->
   @loadNpmTasks 'grunt-contrib-watch'
   @loadNpmTasks 'grunt-coffeelint'
   @loadNpmTasks 'grunt-contrib-connect'
+  @loadNpmTasks 'grunt-exec'
 
   # Our local tasks
   @registerTask 'build', 'Build NoFlo for the chosen target platform', (target = 'all') =>
@@ -76,7 +82,8 @@ module.exports = ->
       @task.run 'uglify'
 
   @registerTask 'test', 'Build NoFlo and run automated tests', (target = 'all') =>
-    @task.run 'coffeelint'
+    #@task.run 'coffeelint'
+    @task.run 'exec:test'
     @task.run 'coffee'
 
   @registerTask 'default', ['test']
