@@ -64,7 +64,6 @@ class Tween extends noflo.Component
     s = s.replace(/out$/, "Out")
     s = s.replace(/inout$/, "InOut")
 
-    console.log(name + ' -> ' + s)
 
     return null unless trident.EasingFunctions[s]
     return new trident.EasingFunctions[s]()
@@ -77,12 +76,7 @@ class Tween extends noflo.Component
     @easing = @getEasing('linear')
     @tween.addEventListener('onpulse', (timeline, durationFraction, timelinePosition) =>
       return unless @outPorts.value.isAttached()
-      console.log('pulse durationF=' + durationFraction)
-      console.log('pulse timelineP=' + timelinePosition)
-      console.log('pulse start=' + @startValue)
-      console.log('pulse stop=' + @stopValue)
       value = @startValue + @easing.map(durationFraction) * (@stopValue - @startValue)
-      console.log('pulse value=' + value)
       @outPorts.value.send(value)
       @outPorts.value.disconnect())
     @tween.addEventListener('onstatechange', (timeline, oldState, newState, durationFraction, timelinePosition) =>
