@@ -33,12 +33,16 @@
     "grunt-contrib-connect": "~0.7.1",
     "component-json": "~0.1.4",
     "grunt-combine": "~0.8.3",
-    "grunt-component": "~0.1.2"
+    "grunt-component": "~0.1.2",
+    "noflo-test": "~0.0.6"
   },
   "keywords": [],
   "noflo": {
     "components": {
       "Tween": "components/Tween.coffee"
     }
+  },
+  "scripts": {
+    "test": "grunt test"
   }
 }
