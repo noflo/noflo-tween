@@ -25,7 +25,7 @@ class Timeline extends noflo.Component
     @repeat = @repeatCount = 0
     @reverse = false
     @autoreverse = false
-    @direction = true
+    @direction = @startDirection = true
 
     # control
     @inPorts.start.on 'data', () =>
@@ -45,7 +45,8 @@ class Timeline extends noflo.Component
     @inPorts.autoreverse.on 'data', (value) =>
       @autoreverse = value
     @inPorts.reverse.on 'data', (value) =>
-      @direction = !value
+      @startDirection = !value
+      @direction = @startDirection unless @autoreverse
 
     # tick
     @inPorts.tick.on 'data', () =>
@@ -56,6 +57,7 @@ class Timeline extends noflo.Component
     @lastTime = @currentTime()
     @elapsedTime = 0
     @repeat = @repeatCount
+    @direction = @startDirection
     @running = true
     return unless @outPorts.started.isAttached()
     @outPorts.started.send(true)
