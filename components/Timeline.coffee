@@ -54,6 +54,7 @@ class Timeline extends noflo.Component
 
 
   start: () ->
+    return if @running
     @lastTime = @currentTime()
     @elapsedTime = 0
     @repeat = @repeatCount
@@ -64,15 +65,18 @@ class Timeline extends noflo.Component
     @outPorts.started.disconnect()
 
   stop: () ->
+    return unless @running
     @running = false
     return unless @outPorts.stopped.isAttached()
     @outPorts.stopped.send(true)
     @outPorts.stopped.disconnect()
 
   pause: () ->
+    return unless @running
     @running = false
 
   unpause: () ->
+    return if @running
     @lastTime = @currentTime()
     @running = true
 
