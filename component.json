@@ -8,13 +8,11 @@
   ],
   "dependencies": {
     "noflo/noflo": "*",
-    "component/ease": "*",
-    "djdeath/trident-js": "*"
+    "component/ease": "*"
   },
   "scripts": [
     "components/Ease.coffee",
     "components/Timeline.coffee",
-    "components/Tween.coffee",
     "index.js"
   ],
   "json": [
@@ -23,8 +21,7 @@
   "noflo": {
     "components": {
       "Ease": "components/Ease.coffee",
-      "Timeline": "components/Timeline.coffee",
-      "Tween": "components/Tween.coffee"
+      "Timeline": "components/Timeline.coffee"
     }
   }
 }

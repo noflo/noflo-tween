@@ -21,8 +21,7 @@
   },
   "dependencies": {
     "noflo": "~0.4.0",
-    "ease-component": "~1.0.0",
-    "trident-js": "git://github.com/djdeath/trident-js.git"
+    "ease-component": "~1.0.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -42,8 +41,7 @@
   "noflo": {
     "components": {
       "Ease": "components/Ease.coffee",
-      "Timeline": "components/Timeline.coffee",
-      "Tween": "components/Tween.coffee"
+      "Timeline": "components/Timeline.coffee"
     }
   },
   "scripts": {
