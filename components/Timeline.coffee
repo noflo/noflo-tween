@@ -64,7 +64,6 @@ class Timeline extends noflo.Component
     @outPorts.started.disconnect()
 
   stop: () ->
-    @elapsedTime = 0
     @running = false
     return unless @outPorts.stopped.isAttached()
     @outPorts.stopped.send(true)
