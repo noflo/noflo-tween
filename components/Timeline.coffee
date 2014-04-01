@@ -17,6 +17,8 @@ class Timeline extends noflo.Component
     @outPorts =
       started: new noflo.Port 'bang'
       stopped: new noflo.Port 'bang'
+      paused: new noflo.Port 'bang'
+      unpaused: new noflo.Port 'bang'
       value: new noflo.Port 'bang'
 
 
@@ -74,11 +76,17 @@ class Timeline extends noflo.Component
   pause: () ->
     return unless @running
     @running = false
+    return unless @outPorts.paused.isAttached()
+    @outPorts.paused.send(true)
+    @outPorts.paused.disconnect()
 
   unpause: () ->
     return if @running
     @lastTime = @currentTime()
     @running = true
+    return unless @outPorts.unpaused.isAttached()
+    @outPorts.unpaused.send(true)
+    @outPorts.unpaused.disconnect()
 
   emitPosition: () ->
     return unless @outPorts.value.isAttached()
