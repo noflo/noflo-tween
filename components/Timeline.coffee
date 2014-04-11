@@ -1,7 +1,7 @@
 noflo = require 'noflo'
 
 class Timeline extends noflo.Component
-  description: 'Timeline component'
+  description: 'Timeline component that outputs a normalized value between 0 and 1'
   icon: 'cogs'
   constructor: ->
     @inPorts =
