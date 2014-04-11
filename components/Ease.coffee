@@ -6,7 +6,8 @@ catch
   ease = require 'ease'
 
 class Ease extends noflo.Component
-  description: 'Easing function component'
+  description: 'Easing function component that takes a normalized value between 0
+   and 1 and outputs eased value between from and to inputs'
   icon: 'cogs'
   constructor: ->
     @inPorts =
