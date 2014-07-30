@@ -44,6 +44,15 @@ class Tracks extends noflo.Component
     @outPorts = new noflo.OutPorts
       out:
         datatype: 'number'
+        addressable: true
+      play:
+        datatype: 'bang'
+      pause:
+        datatype: 'bang'
+      stop:
+        datatype: 'bang'
+      end:
+        datatype: 'bang'
       time:
         datatype: 'number'
 
