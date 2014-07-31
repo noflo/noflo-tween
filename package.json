@@ -41,6 +41,7 @@
   "noflo": {
     "components": {
       "Ease": "components/Ease.coffee",
+      "EaseTime": "components/EaseTime.coffee",
       "Timeline": "components/Timeline.coffee"
     }
   },
