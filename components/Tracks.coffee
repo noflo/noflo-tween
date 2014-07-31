@@ -6,9 +6,11 @@ catch
   ease = require 'ease'
 
 class Tracks extends noflo.Component
-  description: 'Set up and drive an arbitrary number of tracks and keyframes'
+  description: 'Timeline with multiple tracks and keyframes'
   icon: 'clock-o'
   constructor: ->
+    @playing = false
+
     @inPorts = new noflo.InPorts
       # Tracks array of objects with name, group, keyframes
       # keyframes array of objects with time, value, easing
@@ -23,7 +25,8 @@ class Tracks extends noflo.Component
         datatype: 'bang'
       length:
         datatype: 'number'
-        description: 'length in seconds of timeline'
+        description: 'length in ms of timeline'
+        value: 3000
       loop:
         datatype: 'boolean'
       time:
@@ -53,10 +56,11 @@ class Tracks extends noflo.Component
         datatype: 'bang'
       end:
         datatype: 'bang'
+        description: 'fired when end is reached (or loops)'
       time:
         datatype: 'number'
 
   getEasing: (name) ->
     return ease[name]
 
-exports.getComponent = -> new Ease
+exports.getComponent = -> new Tracks

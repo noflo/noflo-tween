@@ -10,11 +10,46 @@ class Ease extends noflo.Component
    and 1 and outputs eased value between from and to inputs'
   icon: 'cogs'
   constructor: ->
-    @inPorts =
-      from: new noflo.Port 'number'
-      to: new noflo.Port 'number'
-      type: new noflo.Port 'string'
-      in: new noflo.Port 'number'
+    @inPorts = new noflo.InPorts
+      from:
+        datatype: 'number'
+      to:
+        datatype: 'number'
+      type:
+        datatype: 'string'
+        values: [
+          'linear'
+          'in-quad'
+          'out-quad'
+          'in-out-quad'
+          'in-cube'
+          'out-cube'
+          'in-out-cube'
+          'in-quart'
+          'out-quart'
+          'in-out-quart'
+          'in-quint'
+          'out-quint'
+          'in-out-quint'
+          'in-sine'
+          'out-sine'
+          'in-out-sine'
+          'in-expo'
+          'out-expo'
+          'in-out-expo'
+          'in-circ'
+          'out-circ'
+          'in-out-circ'
+          'in-back'
+          'out-back'
+          'in-out-back'
+          'in-bounce'
+          'out-bounce'
+          'in-out-bounce'
+        ]
+        default: 'linear'
+      in:
+        datatype: 'number'
 
     @outPorts =
       out: new noflo.Port 'number'
@@ -37,6 +72,6 @@ class Ease extends noflo.Component
       @outPorts.out.disconnect()
 
   getEasing: (name) ->
-    return ease[name]
+    return ease[name] or (n) -> return n
 
 exports.getComponent = -> new Ease
