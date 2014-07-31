@@ -9,8 +9,6 @@ class Timeline extends noflo.Component
   description: 'Timeline with multiple tracks and keyframes'
   icon: 'clock-o'
   constructor: ->
-    @playing = false
-
     @inPorts = new noflo.InPorts
       # Tracks array of objects with name, group, keyframes
       # keyframes array of objects with time, value, easing
@@ -38,11 +36,11 @@ class Timeline extends noflo.Component
       speed:
         datatype: 'number'
         description: '1.0 = normal speed'
-        value: 1
+        default: 1
       fps:
         datatype: 'number'
         description: 'maximum fps of animation loop'
-        value: 60
+        default: 60
 
     @outPorts = new noflo.OutPorts
       out:
@@ -59,6 +57,36 @@ class Timeline extends noflo.Component
         description: 'fired when end is reached (or loops)'
       time:
         datatype: 'number'
+
+    playing = false
+    now = null
+    percent = null
+    time = null
+    lastTime = null
+    fps = 60
+    frame = 1000/fps
+    raf = null
+
+    animate = () ->
+      raf = requestAnimationFrame animate
+      now = Date.now()
+      if now-lastTime >= frame
+        for track in tracks
+          ################################# TODO
+
+        lastTime = now
+
+    @inPorts.play.on 'data', () ->
+      raf = requestAnimationFrame animate
+
+    @inPorts.pause.on 'data', () ->
+      cancelAnimationFrame raf
+      playing = false
+
+    @inPorts.stop.on 'data', () ->
+      cancelAnimationFrame raf
+      playing = false
+      time = 0
 
   getEasing: (name) ->
     return ease[name]

@@ -16,7 +16,6 @@
   "scripts": [
     "components/Ease.coffee",
     "components/EaseTime.coffee",
-    "components/Timeline.coffee",
     "index.js"
   ],
   "json": [
@@ -25,8 +24,7 @@
   "noflo": {
     "components": {
       "Ease": "components/Ease.coffee",
-      "EaseTime": "components/EaseTime.coffee",
-      "Timeline": "components/Timeline.coffee"
+      "EaseTime": "components/EaseTime.coffee"
     }
   }
 }
