@@ -10,6 +10,9 @@
     "noflo/noflo": "*",
     "component/ease": "*"
   },
+  "remotes": [
+    "https://raw.githubusercontent.com"
+  ],
   "scripts": [
     "components/Ease.coffee",
     "components/EaseTime.coffee",
