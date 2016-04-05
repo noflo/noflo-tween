@@ -24,7 +24,7 @@
     "ease-component": "~1.0.0"
   },
   "devDependencies": {
-    "grunt": "~0.4.1",
+    "grunt": "~1.0.1",
     "grunt-contrib-coffee": "~0.6.6",
     "grunt-coffeelint": "~0.0.6",
     "grunt-component-build": "~0.2.7",
@@ -43,8 +43,5 @@
       "Ease": "components/Ease.coffee",
       "EaseTime": "components/EaseTime.coffee"
     }
-  },
-  "scripts": {
-    "test": "grunt test"
   }
 }
