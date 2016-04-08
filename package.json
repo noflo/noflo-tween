@@ -35,7 +35,7 @@
     "grunt-combine": "~0.8.3",
     "grunt-component": "~0.1.2",
     "grunt-exec": "~0.4.2",
-    "noflo-test": "~0.0.6"
+    "noflo-test": "~0.0.7"
   },
   "keywords": [],
   "noflo": {
@@ -43,8 +43,5 @@
       "Ease": "components/Ease.coffee",
       "EaseTime": "components/EaseTime.coffee"
     }
-  },
-  "scripts": {
-    "test": "grunt test"
   }
 }
