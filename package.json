@@ -28,7 +28,7 @@
     "grunt-contrib-coffee": "~0.6.6",
     "grunt-coffeelint": "~0.0.6",
     "grunt-component-build": "~0.2.7",
-    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-uglify": "~2.0.0",
     "grunt-contrib-watch": "~0.3.1",
     "grunt-contrib-connect": "~0.7.1",
     "component-json": "~0.1.4",
@@ -43,8 +43,5 @@
       "Ease": "components/Ease.coffee",
       "EaseTime": "components/EaseTime.coffee"
     }
-  },
-  "scripts": {
-    "test": "grunt test"
   }
 }
