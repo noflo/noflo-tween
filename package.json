@@ -19,7 +19,7 @@
     "ease-component": "~1.0.0"
   },
   "devDependencies": {
-    "grunt": "~0.4.1",
+    "grunt": "~1.0.1",
     "grunt-contrib-coffee": "~1.0.0",
     "grunt-coffeelint": "~0.0.6",
     "grunt-component-build": "~0.5.3",
