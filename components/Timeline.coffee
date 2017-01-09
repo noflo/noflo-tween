@@ -1,9 +1,6 @@
 noflo = require 'noflo'
 ease = null
-try
-  ease = require 'ease-component'
-catch
-  ease = require 'ease'
+ease = require 'ease-component'
 
 class Timeline extends noflo.Component
   description: 'Timeline with multiple tracks and keyframes'
@@ -71,9 +68,6 @@ class Timeline extends noflo.Component
       raf = requestAnimationFrame animate
       now = Date.now()
       if now-lastTime >= frame
-        for track in tracks
-          ################################# TODO
-
         lastTime = now
 
     @inPorts.play.on 'data', () ->
