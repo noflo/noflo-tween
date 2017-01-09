@@ -39,9 +39,7 @@ module.exports = ->
 
   # Grunt plugins used for building
   @loadNpmTasks 'grunt-contrib-coffee'
-  @loadNpmTasks 'grunt-component'
-  @loadNpmTasks 'grunt-component-build'
-  @loadNpmTasks 'grunt-combine'
+  @loadNpmTasks 'grunt-noflo-browser'
   @loadNpmTasks 'grunt-contrib-uglify'
 
   # Grunt plugins used for testing
