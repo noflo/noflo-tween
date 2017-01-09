@@ -10,12 +10,7 @@
     "type": "git",
     "url": "git://github.com/noflo/noflo-tween.git"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/noflo/noflo-tween/blob/master/LICENSE-MIT"
-    }
-  ],
+  "license": "MIT",
   "scripts": {
     "test": "grunt test"
   },
@@ -37,7 +32,9 @@
     "grunt-exec": "~0.4.2",
     "noflo-test": "~0.0.6"
   },
-  "keywords": [],
+  "keywords": [
+    "noflo"
+  ],
   "noflo": {
     "components": {
       "Ease": "components/Ease.coffee",
