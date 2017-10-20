@@ -22,11 +22,9 @@ describe 'Ease component', ->
       c = instance
       from = noflo.internalSocket.createSocket()
       to = noflo.internalSocket.createSocket()
-      type = noflo.internalSocket.createSocket()
       ins = noflo.internalSocket.createSocket()
       c.inPorts.from.attach from
       c.inPorts.to.attach to
-      c.inPorts.type.attach type
       c.inPorts.in.attach ins
       done()
   beforeEach ->
@@ -51,6 +49,12 @@ describe 'Ease component', ->
       ins.send 0.5
       ins.send 1.0
   describe 'with in-cube', ->
+    before ->
+      type = noflo.internalSocket.createSocket()
+      c.inPorts.type.attach type
+    after ->
+      c.inPorts.type.detach type
+      type = null
     it 'should get a in-cube response', (done) ->
       expected = [
         0

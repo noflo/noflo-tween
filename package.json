@@ -15,7 +15,7 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "noflo": "0.x >= 0.5",
+    "noflo": "0.x >= 0.8",
     "ease-component": "~1.0.0"
   },
   "devDependencies": {
@@ -37,11 +37,5 @@
   },
   "keywords": [
     "noflo"
-  ],
-  "noflo": {
-    "components": {
-      "Ease": "components/Ease.coffee",
-      "EaseTime": "components/EaseTime.coffee"
-    }
-  }
+  ]
 }
