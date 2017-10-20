@@ -1,138 +1,159 @@
 noflo = require 'noflo'
 
-class EaseTime extends noflo.Component
-  description: 'Converts time to normalized value between 0 and 1 for Ease'
-  icon: 'cogs'
-  constructor: ->
-    @inPorts =
-      tick: new noflo.Port 'bang'
-      start: new noflo.Port 'bang'
-      pause: new noflo.Port 'bang'
-      unpause: new noflo.Port 'bang'
-      stop: new noflo.Port 'bang'
-      duration: new noflo.Port 'number'
-      repeat: new noflo.Port 'number'
-      reverse: new noflo.Port 'boolean'
-      autoreverse: new noflo.Port 'boolean'
-    @outPorts =
-      started: new noflo.Port 'bang'
-      stopped: new noflo.Port 'bang'
-      paused: new noflo.Port 'bang'
-      unpaused: new noflo.Port 'bang'
-      value: new noflo.Port 'bang'
+getPosition = (ctx) ->
+  pos = ctx.elapsedTime / ctx.duration
+  pos = 1.0 - pos unless ctx.direction
+  return pos
 
+isComplete = (ctx) ->
+  return false if ctx.repeat > 0
+  return false if ctx.elapsedTime < ctx.duration
+  return true
 
-    @running = false
-    @duration = 500
-    @repeat = @repeatCount = 0
-    @reverse = false
-    @autoreverse = false
-    @direction = @startDirection = true
+advanceTimeline = (ctx, callback) ->
+  unless ctx.running
+    return callback null
 
-    # control
-    @inPorts.start.on 'data', () =>
-      @start()
-    @inPorts.stop.on 'data', () =>
-      @stop()
-    @inPorts.pause.on 'data', () =>
-      @pause()
-    @inPorts.unpause.on 'data', () =>
-      @unpause()
+  # Measure delta
+  t = Date.now()
+  delta = t - ctx.lastTime
+  ctx.lastTime = t
 
-    # parameters
-    @inPorts.duration.on 'data', (value) =>
-      @duration = value
-    @inPorts.repeat.on 'data', (value) =>
-      @repeatCount = value
-    @inPorts.autoreverse.on 'data', (value) =>
-      @autoreverse = value
-    @inPorts.reverse.on 'data', (value) =>
-      @startDirection = !value
-      @direction = @startDirection unless @autoreverse
+  # Add to elapsedTime
+  ctx.elapsedTime += delta
 
-    # tick
-    @inPorts.tick.on 'data', () =>
-      @advanceTimeline()
+  # End case
+  if isComplete ctx
+    # fix value on bounds
+    ctx.running = false
+    ctx.elapsedTime = ctx.duration
+    callback null
+    return
 
+  # Continue case
+  if ctx.elapsedTime < ctx.duration
+    callback getPosition ctx
+    return
 
-  start: () ->
-    return if @running
-    @lastTime = @currentTime()
-    @elapsedTime = 0
-    @repeat = @repeatCount
-    @direction = @startDirection
-    @running = true
-    return unless @outPorts.started.isAttached()
-    @outPorts.started.send(true)
-    @outPorts.started.disconnect()
+  # Loop case
+  ctx.elapsedTime = ctx.elapsedTime - ctx.duration
+  ctx.direction = !ctx.direction if ctx.autoreverse
+  ctx.repeat -= 1 if ctx.repeat > 0
 
-  stop: () ->
-    return unless @running
-    @running = false
-    return unless @outPorts.stopped.isAttached()
-    @outPorts.stopped.send(true)
-    @outPorts.stopped.disconnect()
-
-  pause: () ->
-    return unless @running
-    @running = false
-    return unless @outPorts.paused.isAttached()
-    @outPorts.paused.send(true)
-    @outPorts.paused.disconnect()
-
-  unpause: () ->
-    return if @running
-    @lastTime = @currentTime()
-    @running = true
-    return unless @outPorts.unpaused.isAttached()
-    @outPorts.unpaused.send(true)
-    @outPorts.unpaused.disconnect()
-
-  emitPosition: () ->
-    return unless @outPorts.value.isAttached()
-    pos = @elapsedTime / @duration
-    pos = 1.0 - pos unless @direction
-    @outPorts.value.send(pos)
-    @outPorts.value.disconnect()
-
-  currentTime: () ->
-    date = new Date()
-    return date.getTime()
-
-  isComplete: () ->
-    return false if @repeat > 0
-    return false if @elapsedTime < @duration
-    return true
-
-  advanceTimeline: () ->
-    return unless @running
-
-    # Measure delta
-    t = @currentTime()
-    delta = t - @lastTime
-    @lastTime = t
-
-    # Add to elapsedTime
-    @elapsedTime += delta
-
-    # End case
-    if @isComplete()
-      # fix value on bounds
-      @elapsedTime = @duration
-      @emitPosition()
-      @stop()
-      return
-
-    # Continue case
-    if @elapsedTime < @duration
-      @emitPosition()
-      return
-
-    # Loop case
-    @elapsedTime = @elapsedTime - @duration
-    @direction = !@direction if @autoreverse
-    @repeat -= 1 if @repeat > 0
-
-    @emitPosition()
+  callback getPosition ctx
 
 exports.getComponent = -> new EaseTime
+
+exports.getComponent = ->
+  c = new noflo.Component
+  c.description = 'Converts time to normalized value between 0 and 1 for Ease'
+  c.icon = 'cogs'
+  c.inPorts.add 'tick',
+    datatype: 'bang'
+  c.inPorts.add 'start',
+    datatype: 'bang'
+  c.inPorts.add 'pause',
+    datatype: 'bang'
+  c.inPorts.add 'unpause',
+    datatype: 'bang'
+  c.inPorts.add 'stop',
+    datatype: 'bang'
+  c.inPorts.add 'duration',
+    datatype: 'number'
+    control: true
+  c.inPorts.add 'repeat',
+    datatype: 'number'
+    control: true
+  c.inPorts.add 'reverse',
+    datatype: 'boolean'
+    control: true
+  c.inPorts.add 'autoreverse',
+    datatype: 'boolean'
+    control: true
+  c.outPorts.add 'started',
+    datatype: 'bang'
+  c.outPorts.add 'stopped',
+    datatype: 'bang'
+  c.outPorts.add 'paused',
+    datatype: 'bang'
+  c.outPorts.add 'unpaused',
+    datatype: 'bang'
+  c.outPorts.add 'value',
+    datatype: 'number'
+  c.forwardBrackets = {}
+  c.scopes = {}
+  c.tearDown = (callback) ->
+    c.scopes = {}
+    do callback
+  c.process (input, output) ->
+    # Check that we have necessary options
+    return if input.attached('duration').length and not input.hasData 'duration'
+    return if input.attached('repeat').length and not input.hasData 'repeat'
+    return if input.attached('reverse').length and not input.hasData 'reverse'
+    return if input.attached('autoreverse').length and not input.hasData 'autoreverse'
+    # Handle bangs
+    if input.hasData 'start'
+      input.getData 'start'
+      duration = 500
+      if input.hasData 'duration'
+        duration = input.getData 'duration'
+      repeat = 0
+      if input.hasData 'repeat'
+        repeat = input.getData 'repeat'
+      reverse = false
+      if input.hasData 'reverse'
+        reverse = input.getData 'reverse'
+      autoreverse = false
+      if input.hasData 'autoreverse'
+        autoreverse = input.getData 'autoreverse'
+      c.scopes[input.scope] =
+        running: true
+        duration: duration
+        repeat: repeat
+        autoreverse: autoreverse
+        lastTime: Date.now()
+        elapsedTime: 0
+        direction: !reverse
+      output.send
+        started: true
+      return
+    if input.hasData 'stop'
+      input.getData 'stop'
+      if c.scopes[input.scope]
+        delete c.scopes[input.scope]
+      output.sendDone
+        stopped: true
+      return
+    if input.hasData 'pause'
+      input.getData 'pause'
+      unless c.scopes[input.scope]?.running
+        output.done()
+        return
+      c.scopes[input.scope].running = false
+      output.sendDone
+        paused: true
+      return
+    if input.hasData 'unpause'
+      input.getData 'unpause'
+      unless c.scopes[input.scope]
+        output.done()
+        return
+      if c.scopes[input.scope].running
+        output.done()
+        return
+      c.scopes[input.scope].running = true
+      output.sendDone
+        unpaused: true
+      return
+    if input.hasData 'tick'
+      input.getData 'tick'
+      unless c.scopes[input.scope]?.running
+        output.done()
+        return
+      advanceTimeline c.scopes[input.scope], (pos) ->
+        if pos is null
+          output.done()
+          return
+        output.sendDone
+          value: pos
+      return

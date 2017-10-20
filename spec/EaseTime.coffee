@@ -12,7 +12,6 @@ describe 'EaseTime component', ->
   start = null
   duration = null
   tick = null
-  reverse = null
   stop = null
   started = null
   value = null
@@ -28,12 +27,10 @@ describe 'EaseTime component', ->
       start = noflo.internalSocket.createSocket()
       duration = noflo.internalSocket.createSocket()
       tick = noflo.internalSocket.createSocket()
-      reverse = noflo.internalSocket.createSocket()
       stop = noflo.internalSocket.createSocket()
       c.inPorts.start.attach start
       c.inPorts.duration.attach duration
       c.inPorts.tick.attach tick
-      c.inPorts.reverse.attach reverse
       c.inPorts.stop.attach stop
       started = noflo.internalSocket.createSocket()
       c.outPorts.started.attach started
