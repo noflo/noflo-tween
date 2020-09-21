@@ -1,4 +1,4 @@
-# noflo-tween [![Build Status](https://travis-ci.org/noflo/noflo-tween.svg?branch=master)](https://travis-ci.org/noflo/noflo-tween)
+# noflo-tween
 
 Tween and timeline components for NoFlo
 
