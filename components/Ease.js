@@ -1,7 +1,7 @@
 const noflo = require('noflo');
 const ease = require('ease-component');
 
-const getEasing = name => ease[name] || (n => n);
+const getEasing = (name) => ease[name] || ((n) => n);
 
 exports.getComponent = () => {
   const c = new noflo.Component();
